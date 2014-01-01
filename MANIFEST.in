@@ -1,0 +1,4 @@
+exclude th_twitter/local_settings.py
+include *.txt *.rst
+recursive-include th_twitter *.html
+recursive-include th_twitter/templates *
