@@ -56,7 +56,11 @@ class ServiceTwitter(ServicesMgr):
                               access_token_key=token_key,
                               access_token_secret=token_secret)
 
-            statuses = api.GetUserTimeline(trigger.user)
+            # get the data of "my" timeline
+            if trigger.tag != '':
+                statuses = api.GetSearch(term=trigger.tag)
+            if trigger.screen != '':
+                statuses = api.GetUserTimeline(trigger.screen)
 
             for s in statuses:
                 data.append({'content': s.text})
@@ -67,6 +71,7 @@ class ServiceTwitter(ServicesMgr):
         """
             let's save the data
         """
+        tags = []
         if token and 'link' in data and data['link'] is not None and len(data['link']) > 0:
             # get the evernote data of this trigger
             trigger = Twitter.objects.get(trigger_id=trigger_id)
@@ -80,9 +85,11 @@ class ServiceTwitter(ServicesMgr):
             # 2 get url if any
             # 3 shortening url
             content = data['url']
+            for tag in trigger.tags.split(','):
+                tags.append({'#' + tag})
 
             if 'content' in data and data['content'] is not None and len(data['content']) > 0:
-                content += ' ' + data['content']
+                content += ' ' + data['content'] + ' ' + tags
 
             status = api.PostUpdate(content)
 

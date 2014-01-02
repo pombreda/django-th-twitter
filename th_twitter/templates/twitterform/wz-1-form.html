@@ -11,7 +11,7 @@
         <h4>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</h4>
         <form class="form-horizontal" action="" method="post">{% csrf_token %}
             <fieldset>
-
+                With the two following fields, you will be able to track the tweets that come from a user or a #tag 
                 <div class="wizard-fieldset">
                     <table>
                     {{ wizard.management_form }}
