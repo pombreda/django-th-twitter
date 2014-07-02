@@ -37,8 +37,8 @@ class ServiceTwitter(ServicesMgr):
         self.AUTH_URL = 'https://api.twitter.com/oauth/authorize'
         self.REQ_TOKEN = 'https://api.twitter.com/oauth/request_token'
         self.ACC_TOKEN = 'https://api.twitter.com/oauth/access_token'
-        self.consummer_key = settings.TH_TWITTER['consumer_key']
-        self.consummer_secret = settings.TH_TWITTER['consumer_secret']
+        self.consumer_key = settings.TH_TWITTER['consumer_key']
+        self.consumer_secret = settings.TH_TWITTER['consumer_secret']
 
     def process_data(self, token, trigger_id, date_triggered):
         """
@@ -97,7 +97,7 @@ class ServiceTwitter(ServicesMgr):
         """
             get the token from twitter
         """
-        consumer = oauth.Consumer(self.consummer_key, self.consummer_secret)
+        consumer = oauth.Consumer(self.consumer_key, self.consumer_secret)
         if token:
             client = oauth.Client(consumer, token)
         else:
@@ -112,7 +112,7 @@ class ServiceTwitter(ServicesMgr):
         callbackUrl = 'http://%s%s' % (
             request.get_host(), reverse('twitter_callback'))
         request_token = self.get_request_token(request, callbackUrl)
-
+        print (request_token)
         # Save the request token information for later
         request.session['oauth_token'] = request_token['oauth_token']
         request.session['oauth_token_secret'] = request_token[
@@ -137,7 +137,7 @@ class ServiceTwitter(ServicesMgr):
             us = UserService.objects.get(
                 user=request.user,
                 name=ServicesActivated.objects.get(name='ServiceTwitter'))
-            # 2) Readability API require to use 4 parms consummer_key/secret + token_key/secret
+            # 2) Readability API require to use 4 parms consumer_key/secret + token_key/secret
             # instead of usually get just the token from an access_token
             # request. So we need to add a string seperator for later use to
             # slpit on this one
@@ -183,7 +183,7 @@ class ServiceTwitter(ServicesMgr):
         return access_token
 
     def _get_oauth_client(self, token=None):
-        consumer = oauth.Consumer(self.consummer_key, self.consummer_secret)
+        consumer = oauth.Consumer(self.consumer_key, self.consumer_secret)
         if token:
             client = oauth.Client(consumer, token)
         else:

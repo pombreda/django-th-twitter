@@ -19,7 +19,7 @@ class TwitterForm(forms.ModelForm):
         }
 
 
-class TwitterConsummerForm(TwitterForm):
+class TwitterConsumerForm(TwitterForm):
     pass
 
 
