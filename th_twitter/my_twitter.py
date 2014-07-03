@@ -81,17 +81,19 @@ class ServiceTwitter(ServicesMgr):
                               access_token_key=token_key,
                               access_token_secret=token_secret)
             # todo
-            # 1 get content
-            # 2 get url if any
-            # 3 shortening url
-            content = data['url']
-            for tag in trigger.tags.split(','):
+            # check the size of the content to avoid to be truncate
+            content = data['link']
+            for tag in trigger.tag.split(','):
                 tags.append({'#' + tag})
 
-            if 'content' in data and data['content'] is not None and len(data['content']) > 0:
-                content += ' ' + data['content'] + ' ' + tags
+            print data['content']
+            if 'content' in data and data['content'] is not None and len(data['content']) > 0:                
+                content = str("{link} {content} {tags}").format(link=data['link'],
+                                                                content=unicode(data['content'], errors='replace'),
+                                                                tags=tags)
 
             status = api.PostUpdate(content)
+            print status
 
     def get_twitter_client(self, token=None):
         """

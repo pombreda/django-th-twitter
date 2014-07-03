@@ -20,7 +20,14 @@ class TwitterForm(forms.ModelForm):
 
 
 class TwitterConsumerForm(TwitterForm):
-    pass
+
+    class Meta:
+        model = Twitter
+        fields = ('tag',)
+        exclude = ('screen',)
+        help_texts = {
+            'tag': _('Put the tag you want to add'),
+        }
 
 
 class TwitterProviderForm(TwitterForm):
