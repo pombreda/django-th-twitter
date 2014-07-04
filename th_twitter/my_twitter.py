@@ -40,6 +40,7 @@ class ServiceTwitter(ServicesMgr):
         self.consumer_key = settings.TH_TWITTER['consumer_key']
         self.consumer_secret = settings.TH_TWITTER['consumer_secret']
 
+
     def process_data(self, token, trigger_id, date_triggered):
         """
             get the data from the service
@@ -80,17 +81,21 @@ class ServiceTwitter(ServicesMgr):
                               consumer_secret=self.consumer_secret,
                               access_token_key=token_key,
                               access_token_secret=token_secret)
-            # todo
-            # check the size of the content to avoid to be truncate
-            content = data['link']
-            for tag in trigger.tag.split(','):
-                tags.append({'#' + tag})
 
-            print data['content']
-            if 'content' in data and data['content'] is not None and len(data['content']) > 0:                
-                content = str("{link} {content} {tags}").format(link=data['link'],
-                                                                content=unicode(data['content'], errors='replace'),
-                                                                tags=tags)
+            link = data['link']
+            if trigger.tag:
+                for tag in trigger.tag.split(','):
+                    tags.append({'#' + tag})
+
+            if 'content' in data and data['content'] is not None and len(data['content']) > 0:
+
+                content = str("{content} {link}").format(link=link,
+                                                         content=unicode(data['content'], errors='replace'))
+
+            # TODO : need to check the size of the content and tags to add
+            if len(tags) > 0:
+                content = ','.join(tags)
+
 
             status = api.PostUpdate(content)
             print status

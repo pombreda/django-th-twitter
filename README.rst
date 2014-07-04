@@ -6,8 +6,9 @@ This service provides an access to a Twitter account from Trigger Happy
 
 Requirements :
 ==============
-* django_th 0.8.2
+* django_th 0.9.0
 * python-twitter 1.1
+* oauth2 1.5.211
 
 
 Installation:
