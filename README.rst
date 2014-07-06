@@ -2,7 +2,7 @@
 Django Trigger Happy : Twitter Service
 ======================================
 
-This service provides an access to a Twitter account from Trigger Happy
+From Trigger Happy, this connector provides an access to your Twitter account
 
 Requirements :
 ==============
