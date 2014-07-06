@@ -1,6 +1,6 @@
-======================================
-Django Trigger Happy : Twitter Service
-======================================
+=================
+Twitter Connector
+=================
 
 From Trigger Happy, this connector provides an access to your Twitter account
 
