@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
 # oauth and url stuff
-import oauth2 as oauth
-import urlparse
+# python 2
+import sys
+if sys.version_info.major == 2:
+    import oauth2 as oauth
+    import urlparse
+# python 3
+elif sys.version_info.major == 3:
+    import oauthlib as oauth
+    from urllib.parse import urlparse
+
 import urllib
+
 # add the python API
 import twitter
 
@@ -39,7 +48,6 @@ class ServiceTwitter(ServicesMgr):
         self.ACC_TOKEN = 'https://api.twitter.com/oauth/access_token'
         self.consumer_key = settings.TH_TWITTER['consumer_key']
         self.consumer_secret = settings.TH_TWITTER['consumer_secret']
-
 
     def process_data(self, token, trigger_id, date_triggered):
         """
@@ -85,20 +93,39 @@ class ServiceTwitter(ServicesMgr):
             link = data['link']
             if trigger.tag:
                 for tag in trigger.tag.split(','):
-                    tags.append({'#' + tag})
+                    tags.append('#' + tag.strip())
 
-            if 'content' in data and data['content'] is not None and len(data['content']) > 0:
+            if 'title' in data and data['title'] is not None and len(data['title']) > 0:
 
-                content = str("{content} {link}").format(link=link,
-                                                         content=unicode(data['content'], errors='replace'))
+                content = str("{title} {link}").format(link=link,
+                                                       title=data['title'].encode('utf-8'))
 
             # TODO : need to check the size of the content and tags to add
             if len(tags) > 0:
-                content = ','.join(tags)
+                content += ' ' + str(','.join(tags))
 
-
-            status = api.PostUpdate(content)
-            print status
+            try:
+                # status = api.PostUpdate(content)
+                api.PostUpdate(content)
+                return True
+            except Exception as inst:
+                if len(inst.message) == 1:
+                    logger.critical("ERR code = {} message = {}".format(
+                        inst.message[0]['code'], inst.message[0]['message']))
+                elif len(inst.message) > 1:
+                    for message in inst.message:
+                        i = 0
+                        msg_line = ''
+                        code_line = ''
+                        for msg in message:
+                            if i == 0:
+                                msg_line = ' message = ' + message[msg]
+                            if i == 1:
+                                code_line = ' code = ' + str(message[msg])
+                                logger.critical("ERR{} {}".format(
+                                    code_line, msg_line))
+                            i = i + 1
+                return False
 
     def get_twitter_client(self, token=None):
         """
@@ -144,9 +171,10 @@ class ServiceTwitter(ServicesMgr):
             us = UserService.objects.get(
                 user=request.user,
                 name=ServicesActivated.objects.get(name='ServiceTwitter'))
-            # 2) Readability API require to use 4 parms consumer_key/secret + token_key/secret
-            # instead of usually get just the token from an access_token
-            # request. So we need to add a string seperator for later use to
+            # 2) Readability API require to use 4 parms consumer_key/secret +
+            # token_key/secret instead of usually get just the token
+            # from an access_token request
+            # So we need to add a string seperator for later use to
             # slpit on this one
             access_token = self.get_access_token(
                 request.session['oauth_token'],
