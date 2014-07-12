@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.translation import ugettext as _
 from django import forms
+from django.forms import TextInput
 from th_twitter.models import Twitter
 
 
@@ -27,6 +28,9 @@ class TwitterConsumerForm(TwitterForm):
         exclude = ('screen',)
         help_texts = {
             'tag': _('Put the tag you want to add'),
+        }
+        widgets = {
+            'tag': TextInput(attrs={'class': 'form-control'}),
         }
 
 

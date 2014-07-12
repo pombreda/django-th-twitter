@@ -2,8 +2,10 @@ from setuptools import setup, find_packages
 from th_twitter import __version__ as version
 import os
 
+
 def strip_comments(l):
     return l.split('#', 1)[0].strip()
+
 
 def reqs(*f):
     return list(filter(None, [strip_comments(l) for l in open(
@@ -14,7 +16,7 @@ install_requires = reqs('requirements.txt')
 setup(
     name='django_th_twitter',
     version=version,
-    description='Trigger Happy : Service Twitter',
+    description='From Trigger Happy, this connector provides an access to your Twitter account',
     author='Olivier Demah',
     author_email='olivier@foxmask.info',
     url='https://github.com/foxmask/django-th-twitter',
@@ -30,6 +32,6 @@ setup(
         'Programming Language :: Python',
         'Framework :: Django',
     ],
-    install_requires=install_requires,    
+    install_requires=install_requires,
     include_package_data=True,
 )
